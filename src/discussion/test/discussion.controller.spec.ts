@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DiscussionController } from './discussion.controller';
-import { DiscussionService } from './discussion.service';
+import { DiscussionService } from '../discussion.service';
+import { DiscussionController } from '../discussion.controller';
+
 
 describe('DiscussionController', () => {
   let controller: DiscussionController;

@@ -1,12 +1,46 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Res } from '@nestjs/common';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  home(@Res() res) {
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Discussion Forum API</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              background: #f5f5f5;
+              padding: 40px;
+              text-align: center;
+            }
+            h1 {
+              color: #333;
+            }
+            a {
+              display: inline-block;
+              margin-top: 20px;
+              font-weight: 500;
+              padding: 12px 24px;
+              background: #5ec009ff;
+              color: white;
+              font-size: 16px;
+              text-decoration: none;
+              border-radius: 6px;
+            }
+            a:hover {
+              background: #3a7904ff;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Discussion Forum API</h1>
+          <a href="/docs">API Documentation</a>
+        </body>
+      </html>
+    `;
+    res.type('html').send(html);
   }
 }
