@@ -5,7 +5,6 @@ import { AuthResponseDto } from '../dto/response.dto';
 import * as SYS_MSG from 'src/constants/system-messages';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-
 export function DocsRegisterUser() {
   return applyDecorators(
     ApiTags('Auth'),

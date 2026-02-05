@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-
 const logger = new Logger('Bootstrap');
 
 async function bootstrap() {

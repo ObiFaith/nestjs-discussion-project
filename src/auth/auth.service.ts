@@ -4,9 +4,10 @@ import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { RegisterDto } from './dto/register.dto';
 import { UserService } from 'src/user/user.service';
+import { AuthResponseDto } from './dto/response.dto';
+import { User } from 'src/user/entities/user.entity';
 import * as SYS_MSG from 'src/constants/system-messages';
 import { ConflictException, Injectable } from '@nestjs/common';
-
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,18 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
+  private mapToAuthResponseDto(user: User): AuthResponseDto {
+    return {
+      id: user.id,
+      role: user.role,
+      email: user.email,
+      last_name: user.lastName,
+      first_name: user.firstName,
+      created_at: user.createdAt,
+      updated_at: user.updatedAt,
+    };
+  }
+
   async generateToken(userId: string, email: string, role: string) {
     const payload = { id: userId, email, role };
     const accessToken = await this.jwtService.signAsync(payload);
@@ -24,30 +37,55 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-    const { email, password, ...restDto } = registerDto;
-    // convert email to lowercase
-    const lowercaseEmail = email.toLowerCase();
-    // Check if user already exists
-    const existingUser = await this.userService.findByEmail(lowercaseEmail);
+    const { password, ...restDto } = registerDto;
+    // Check user already exists
+    const existingUser = await this.userService.findByEmail(registerDto.email);
     if (existingUser) {
       throw new ConflictException(SYS_MSG.ACCOUNT_ALREADY_EXISTS);
     }
     // Hash password
-    const saltRounds = this.configService.get('saltRounds') ?? 10;
+    const saltRounds = this.configService.get<number>('saltRounds') ?? 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     // Create user
-    const { passwordHash, ...user } = await this.userService.create({
+    const user = await this.userService.create({
       ...restDto,
-      email: lowercaseEmail,
       passwordHash: hashedPassword,
     });
     // Generate jwt token
     const token = await this.generateToken(user.id, user.email, user.role);
-    // return user data + jwt token
-    return { ...user, ...token };
+
+    return {
+      message: SYS_MSG.USER_CREATED_SUCCESSFULLY,
+      user: this.mapToAuthResponseDto(user),
+      ...token,
+    };
   }
 
-  login(loginDto: LoginDto) {
-    return `This action login user`;
+  async login(loginDto: LoginDto) {
+    // Check user already exists
+    const existingUser = await this.userService.findByEmail(loginDto.email);
+    if (!existingUser) {
+      throw new ConflictException(SYS_MSG.USER_NOT_FOUND);
+    }
+    // Check user password match
+    const isMatch = await bcrypt.compare(
+      loginDto.password,
+      existingUser.passwordHash,
+    );
+    if (!isMatch) {
+      throw new ConflictException(SYS_MSG.USER_NOT_FOUND);
+    }
+    // Generate jwt token
+    const token = await this.generateToken(
+      existingUser.id,
+      existingUser.email,
+      existingUser.role,
+    );
+
+    return {
+      message: SYS_MSG.USER_LOGIN_SUCCESSFULLY,
+      user: this.mapToAuthResponseDto(existingUser),
+      ...token,
+    };
   }
 }

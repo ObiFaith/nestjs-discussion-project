@@ -4,7 +4,6 @@ import { RegisterDto } from './dto/register.dto';
 import { DocsLoginUser, DocsRegisterUser } from './doc/auth.swagger';
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
-
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

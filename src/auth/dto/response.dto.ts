@@ -1,9 +1,9 @@
 export class AuthResponseDto {
   id: string;
-  firstname: string;
-  lastname: string;
+  first_name: string;
+  last_name: string;
   email: string;
   role: string;
-  accessToken: string;
-  refreshToken?: string;
+  created_at: Date;
+  updated_at: Date;
 }

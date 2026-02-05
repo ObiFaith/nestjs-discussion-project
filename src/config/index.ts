@@ -5,7 +5,7 @@ export default () => ({
     secret: process.env.JWT_SECRET,
     refreshSecret: process.env.JWT_REFRESH_SECRET,
   },
-  port: parseInt(process.env.PORT ?? '', 10) || 3008,
-  appName: process.env.APP_NAME || 'Discussion Forum Project',
+  port: parseInt(process.env.PORT ?? '3000', 10),
+  appName: process.env.APP_NAME,
   saltRounds: parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10),
 });

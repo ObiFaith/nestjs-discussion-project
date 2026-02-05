@@ -1,8 +1,14 @@
 import { User } from '../../user/entities/user.entity';
 import { BaseEntity } from '../../common/entities/base-entity';
 import { Comment } from '../../comment/entities/comment.entity';
-import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 @Entity('discussions')
 export class Discussion extends BaseEntity {

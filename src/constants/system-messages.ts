@@ -5,6 +5,7 @@ export const UNAUTHORIZED = 'Unauthorized';
 export const BAD_REQUEST = 'Bad request';
 
 // User / Account
+export const USER_NOT_FOUND = 'User not found';
 export const ACCOUNT_ALREADY_EXISTS = 'Account already exists';
 export const USER_EMAIL_CONFLICT = 'User with email already exists.';
 export const USER_LOGIN_SUCCESSFULLY = 'User logged in successfully';

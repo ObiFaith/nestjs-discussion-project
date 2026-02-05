@@ -10,7 +10,6 @@ import { CommentModule } from './comment/comment.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DiscussionModule } from './discussion/discussion.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -25,7 +24,7 @@ import { DiscussionModule } from './discussion/discussion.module';
         url: config.get<string>('databaseUrl'),
         autoLoadEntities: true,
         synchronize: false,
-        migrations: ['src/database/migrations/*.ts'],
+        migrations: ['dist/database/migrations/*.js'],
       }),
     }),
     AuthModule,
