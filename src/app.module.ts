@@ -5,10 +5,10 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
+import { HealthModule } from './health/health.module';
 import { CommentModule } from './comment/comment.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DiscussionModule } from './discussion/discussion.module';
-import { HealthModule } from './health/health.module';
 
 
 @Module({
@@ -22,7 +22,7 @@ import { HealthModule } from './health/health.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
-        url: config.get<string>('database_url'),
+        url: config.get<string>('databaseUrl'),
         autoLoadEntities: true,
         synchronize: false,
         migrations: ['src/database/migrations/*.ts'],

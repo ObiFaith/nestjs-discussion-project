@@ -2,7 +2,7 @@ import { Column, Entity } from 'typeorm';
 import { BaseEntity } from '../../common/entities/base-entity';
 
 
-enum UserRole {
+export enum UserRole {
   'LEARNER' = 'learner',
   'MENTOR' = 'mentor',
   'ADMIN' = 'admin',
