@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
-import { UserRole } from 'src/common/enum';
-import { ROLE_KEY } from 'src/common/decorators/role.decorator';
+import { UserRole } from '../../common/enum';
+import { ROLE_KEY } from '../../common/decorators/role.decorator';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 interface AuthenticatedRequest extends Request {

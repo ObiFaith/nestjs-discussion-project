@@ -4,10 +4,10 @@ import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { RegisterDto } from './dto/register.dto';
 import { UserService } from 'src/user/user.service';
-import { AuthResponseDto, UserResponseDto } from './dto/response.dto';
 import { User } from 'src/user/entities/user.entity';
 import * as SYS_MSG from 'src/constants/system-messages';
 import { ConflictException, Injectable } from '@nestjs/common';
+import { AuthResponseDto, UserResponseDto } from './dto/response.dto';
 
 @Injectable()
 export class AuthService {
