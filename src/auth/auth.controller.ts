@@ -1,7 +1,7 @@
 import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
-import { DocsLoginUser, DocsRegisterUser } from './doc/auth.swagger';
+import { swaggerLoginUser, swaggerRegisterUser } from './swagger/auth.swagger';
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
 @Controller('auth')
@@ -10,7 +10,7 @@ export class AuthController {
 
   // --- POST: LOGIN USER ---
   @Post('login')
-  @DocsLoginUser()
+  @swaggerLoginUser()
   @HttpCode(HttpStatus.OK)
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
@@ -18,7 +18,7 @@ export class AuthController {
 
   // --- POST: REGISTER USER ---
   @Post('register')
-  @DocsRegisterUser()
+  @swaggerRegisterUser()
   @HttpCode(HttpStatus.CREATED)
   register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);

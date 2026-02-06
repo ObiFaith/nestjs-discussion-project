@@ -4,10 +4,11 @@ import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { RegisterDto } from './dto/register.dto';
 import { UserService } from 'src/user/user.service';
+import { AuthResponseDto } from './dto/response.dto';
 import { User } from 'src/user/entities/user.entity';
 import * as SYS_MSG from 'src/constants/system-messages';
+import { UserResponseDto } from 'src/user/dto/responses.dto';
 import { ConflictException, Injectable } from '@nestjs/common';
-import { AuthResponseDto, UserResponseDto } from './dto/response.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,12 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  private mapToAuthResponseDto(user: User): UserResponseDto {
+  /**
+   * Map User entity to user response DTO
+   * @param user User data
+   * @returns UserResponseDto
+   */
+  private mapToUserResponseDto(user: User): UserResponseDto {
     return {
       id: user.id,
       role: user.role,
@@ -29,15 +35,22 @@ export class AuthService {
     };
   }
 
-  async generateToken(id: string, email: string, role: string) {
-    const accessToken = await this.jwtService.signAsync({
-      id,
-      email,
-      role,
-    });
+  generateToken(id: string, role: string) {
+    const accessToken = this.jwtService.sign(
+      {
+        id,
+        role,
+      },
+      { secret: this.configService.get<string>('jwt.secret'), expiresIn: '1h' },
+    );
     return { access_token: accessToken };
   }
 
+  /**
+   * Register new user
+   * @param registerDto
+   * @returns Promise<AuthResponseDto>
+   */
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
     const { password, ...restDto } = registerDto;
     // Check user already exists
@@ -54,15 +67,20 @@ export class AuthService {
       passwordHash: hashedPassword,
     });
     // Generate jwt token
-    const token = await this.generateToken(user.id, user.email, user.role);
+    const token = this.generateToken(user.id, user.role);
 
     return {
       message: SYS_MSG.USER_CREATED_SUCCESSFULLY,
-      user: this.mapToAuthResponseDto(user),
+      user: this.mapToUserResponseDto(user),
       ...token,
     };
   }
 
+  /**
+   * Log user in
+   * @param loginDto
+   * @returns Promise<AuthResponseDto>
+   */
   async login(loginDto: LoginDto): Promise<AuthResponseDto> {
     // Check user already exists
     const existingUser = await this.userService.findByEmail(loginDto.email);
@@ -78,15 +96,11 @@ export class AuthService {
       throw new ConflictException(SYS_MSG.USER_NOT_FOUND);
     }
     // Generate jwt token
-    const token = await this.generateToken(
-      existingUser.id,
-      existingUser.email,
-      existingUser.role,
-    );
+    const token = this.generateToken(existingUser.id, existingUser.role);
 
     return {
       message: SYS_MSG.USER_LOGIN_SUCCESSFULLY,
-      user: this.mapToAuthResponseDto(existingUser),
+      user: this.mapToUserResponseDto(existingUser),
       ...token,
     };
   }

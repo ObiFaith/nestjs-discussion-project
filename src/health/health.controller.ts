@@ -1,3 +1,4 @@
+import { ApiOperation } from '@nestjs/swagger';
 import { Controller, Get } from '@nestjs/common';
 import {
   HealthCheck,
@@ -13,6 +14,10 @@ export class HealthController {
   ) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Check application health',
+    description: 'Check which part of the app is healthy',
+  })
   @HealthCheck()
   check() {
     return this.health.check([() => this.db.pingCheck('database')]);

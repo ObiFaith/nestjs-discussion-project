@@ -20,7 +20,7 @@ export class User extends BaseEntity {
   })
   role: UserRole;
 
-  @Column({ name: 'password_hash', nullable: false })
+  @Column({ name: 'password_hash', nullable: false, select: false })
   passwordHash: string;
 
   @Column({ name: 'email_verified', default: false })
