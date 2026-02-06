@@ -1,11 +1,6 @@
 import { Column, Entity } from 'typeorm';
+import { UserRole } from '../../common/enum';
 import { BaseEntity } from '../../common/entities/base-entity';
-
-export enum UserRole {
-  'LEARNER' = 'learner',
-  'MENTOR' = 'mentor',
-  'ADMIN' = 'admin',
-}
 
 @Entity('users')
 export class User extends BaseEntity {

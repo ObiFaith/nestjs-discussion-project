@@ -4,7 +4,7 @@ import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { RegisterDto } from './dto/register.dto';
 import { UserService } from 'src/user/user.service';
-import { AuthResponseDto } from './dto/response.dto';
+import { AuthResponseDto, UserResponseDto } from './dto/response.dto';
 import { User } from 'src/user/entities/user.entity';
 import * as SYS_MSG from 'src/constants/system-messages';
 import { ConflictException, Injectable } from '@nestjs/common';
@@ -17,7 +17,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  private mapToAuthResponseDto(user: User): AuthResponseDto {
+  private mapToAuthResponseDto(user: User): UserResponseDto {
     return {
       id: user.id,
       role: user.role,
@@ -29,14 +29,16 @@ export class AuthService {
     };
   }
 
-  async generateToken(userId: string, email: string, role: string) {
-    const payload = { id: userId, email, role };
-    const accessToken = await this.jwtService.signAsync(payload);
-
+  async generateToken(id: string, email: string, role: string) {
+    const accessToken = await this.jwtService.signAsync({
+      id,
+      email,
+      role,
+    });
     return { access_token: accessToken };
   }
 
-  async register(registerDto: RegisterDto) {
+  async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
     const { password, ...restDto } = registerDto;
     // Check user already exists
     const existingUser = await this.userService.findByEmail(registerDto.email);
@@ -61,7 +63,7 @@ export class AuthService {
     };
   }
 
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto): Promise<AuthResponseDto> {
     // Check user already exists
     const existingUser = await this.userService.findByEmail(loginDto.email);
     if (!existingUser) {
